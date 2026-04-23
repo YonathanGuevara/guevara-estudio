@@ -37,10 +37,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 cursor-pointer">
           <div className="w-9 h-9 rounded-md overflow-hidden flex-shrink-0">
-            <img src={LOGO_URL} alt="Logo Cr. Yonathan Guevara" className="w-full h-full object-cover" />
+            <img src={LOGO_URL} alt="Logo Yonathan Guevara" className="w-full h-full object-cover" />
           </div>
           <div className="hidden sm:block">
-            <p className="text-white font-bold text-sm leading-tight tracking-tight">Cr. Yonathan Guevara</p>
+            <p className="text-white font-bold text-sm leading-tight tracking-tight">Yonathan Guevara</p>
             <p className="text-[#6B7280] text-xs tracking-wide">Contador Público · Argentina</p>
           </div>
         </Link>
