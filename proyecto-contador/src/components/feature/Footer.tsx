@@ -171,7 +171,7 @@ export default function Footer() {
             © 2026 Cr. Yonathan Guevara · Contador Público Matriculado · Argentina
           </p>
           <p className="text-[#6B7280] text-xs">
-            CUIT: 20-XXXXXXXX-X · Matrícula CPCE
+            CUIT: 20-38551551-1 · Matrícula CPCELP T° XXI F° 20
           </p>
         </div>
       </div>
