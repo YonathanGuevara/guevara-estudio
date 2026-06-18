@@ -2,7 +2,7 @@ import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 const LOGO_URL = 'https://static.readdy.ai/image/37bdca1177b18a6b22719b392b997c4d/e7d0a2434435225cf8237542872598ab.jpeg';
-const WA_LINK = 'https://wa.me/5492954321876?text=Hola%21%20Me%20interesa%20una%20consulta%20gratuita.';
+const WA_LINK = 'https://wa.me/5491150069106?text=Hola%21%20Me%20interesa%20una%20consulta%20gratuita.';
 
 const navLinks = [
   { label: 'Inicio', path: '/' },
@@ -22,7 +22,7 @@ export default function Footer() {
     if (!email) return;
     setLoading(true);
     const msg = encodeURIComponent(`Hola! Quiero suscribirme a las novedades fiscales. Mi email es: ${email}`);
-    window.open(`https://wa.me/5492954321876?text=${msg}`, '_blank');
+    window.open(`https://wa.me/5491150069106?text=${msg}`, '_blank');
     setSubscribed(true);
     setEmail('');
     setLoading(false);
