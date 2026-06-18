@@ -1,4 +1,4 @@
-const WA_LINK = 'https://wa.me/5492954321876?text=Hola%21%20Me%20interesa%20una%20consulta%20gratuita.';
+const WA_LINK = 'https://wa.me/5491150069106?text=Hola%21%20Me%20interesa%20una%20consulta%20gratuita.';
 
 const faq = [
   {
