@@ -45,7 +45,7 @@ export default function ContactInfo() {
         </span>
         <div>
           <p className="text-white font-bold text-base">WhatsApp directo</p>
-          <p className="text-[#9CA3AF] text-sm">Respondemos rápido · +54 2954 321876</p>
+          <p className="text-[#9CA3AF] text-sm">Respondemos rápido · +54 11 50069106</p>
         </div>
         <span className="ml-auto w-8 h-8 flex items-center justify-center text-[#9CA3AF]">
           <i className="ri-arrow-right-line"></i>
