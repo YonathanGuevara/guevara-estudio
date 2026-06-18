@@ -1,6 +1,6 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 
-const WA_NUMBER = '5492954321876';
+const WA_NUMBER = '5491150069106';
 
 interface FormData {
   nombre: string;
