@@ -14,6 +14,3 @@ const routes: RouteObject[] = [
 ];
 
 export default routes;
-import Herramientas from '@/pages/herramientas/page';
-// y en routes:
-{ path: '/herramientas', element: <Herramientas /> },
