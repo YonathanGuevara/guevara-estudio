@@ -10,7 +10,7 @@ const routes: RouteObject[] = [
   { path: '/servicios', element: <Servicios /> },
   { path: '/sobre-mi', element: <SobreMi /> },
   { path: '/contacto', element: <Contacto /> },
-  { path: '*', element: <NotFound /> },
+  { path: '/herramientas', element: <Herramientas /> },
 ];
 
 export default routes;
