@@ -4,6 +4,7 @@ import Home from '@/pages/home/page';
 import Servicios from '@/pages/servicios/page';
 import SobreMi from '@/pages/sobre-mi/page';
 import Contacto from '@/pages/contacto/page';
+import Herramientas from '@/pages/herramientas/page';
 
 const routes: RouteObject[] = [
   { path: '/', element: <Home /> },
@@ -11,6 +12,7 @@ const routes: RouteObject[] = [
   { path: '/sobre-mi', element: <SobreMi /> },
   { path: '/contacto', element: <Contacto /> },
   { path: '/herramientas', element: <Herramientas /> },
+  { path: '*', element: <NotFound /> },
 ];
 
 export default routes;
