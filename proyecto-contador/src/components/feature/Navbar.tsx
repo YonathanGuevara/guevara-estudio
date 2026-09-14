@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 // Tu logo propio - reemplazá esta URL con la tuya cuando tengas hosting
 const LOGO_URL = 'https://static.readdy.ai/image/37bdca1177b18a6b22719b392b997c4d/e7d0a2434435225cf8237542872598ab.jpeg';
 
+const AUREA_URL = 'https://aurea.guevara-estudio.com.ar/';
+
 const navLinks = [
   { label: 'Inicio', path: '/' },
   { label: 'Servicios', path: '/servicios' },
@@ -63,6 +65,17 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <a
+            href={AUREA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Ingresá al sistema de gestión AUREA"
+            className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#C4B5FD] hover:text-white border border-[#A78BFA]/40 hover:border-[#A78BFA] hover:bg-[#A78BFA]/10 rounded-full px-4 py-2 transition-colors cursor-pointer whitespace-nowrap"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA]"></span>
+            AUREA
+            <i className="ri-arrow-right-up-line text-sm"></i>
+          </a>
           <Link
             to="/contacto"
             className="hidden md:flex items-center gap-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors cursor-pointer whitespace-nowrap"
@@ -86,6 +99,16 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="md:hidden bg-[#0A0B0D] border-t border-white/5 px-6 py-6 flex flex-col gap-5">
+          <a
+            href={AUREA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-base font-semibold text-[#C4B5FD] cursor-pointer"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA]"></span>
+            AUREA — Sistema de gestión
+            <i className="ri-arrow-right-up-line text-sm"></i>
+          </a>
           {navLinks.map((link) => (
             <Link
               key={link.path}

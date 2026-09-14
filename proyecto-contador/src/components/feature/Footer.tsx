@@ -89,6 +89,17 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <a
+                  href="https://aurea.guevara-estudio.com.ar/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-[#C4B5FD] hover:text-white text-sm transition-colors cursor-pointer"
+                >
+                  AUREA
+                  <i className="ri-arrow-right-up-line text-xs"></i>
+                </a>
+              </li>
             </ul>
           </div>
 
