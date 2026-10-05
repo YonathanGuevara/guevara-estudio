@@ -1,17 +1,17 @@
 import type { RouteObject } from 'react-router-dom';
 import NotFound from '@/pages/NotFound';
-import Home from '@/pages/home/page';
-import Servicios from '@/pages/servicios/page';
 import SobreMi from '@/pages/sobre-mi/page';
-import Contacto from '@/pages/contacto/page';
+import Servicios from '@/pages/servicios/page';
+import Aurea from '@/pages/aurea/page';
 import Herramientas from '@/pages/herramientas/page';
+import Contacto from '@/pages/contacto/page';
 
 const routes: RouteObject[] = [
-  { path: '/', element: <Home /> },
+  { path: '/', element: <SobreMi /> },
   { path: '/servicios', element: <Servicios /> },
-  { path: '/sobre-mi', element: <SobreMi /> },
-  { path: '/contacto', element: <Contacto /> },
+  { path: '/aurea', element: <Aurea /> },
   { path: '/herramientas', element: <Herramientas /> },
+  { path: '/contacto', element: <Contacto /> },
   { path: '*', element: <NotFound /> },
 ];
 
