@@ -1,8 +1,8 @@
 import Navbar from '@/components/feature/Navbar';
 import Footer from '@/components/feature/Footer';
-import { Link } from 'react-router-dom';
 
 const AUREA_URL = 'https://aurea.guevara-estudio.com.ar';
+const DEMO_URL = 'https://aurea.guevara-estudio.com.ar/demo';
 const WA_LINK = 'https://wa.me/5492954321876?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20el%20sistema%20Aurea.';
 
 const modulos = [
@@ -53,7 +53,7 @@ export default function Facturacion() {
                   Sistema de gestión comercial y facturación electrónica para empresas y emprendedores argentinos.
                 </p>
                 <p className="text-[#6B7280] text-base leading-relaxed mb-10 max-w-xl">
-                  Emitís facturas reales ante ARCA/AFIP, controlás tus ventas y gastos, y recibís reportes automáticos de tu negocio — todo desde un solo lugar, sin conocimientos técnicos.
+                  Emitís facturas reales ante ARCA/AFIP, controlás tus ventas y gastos, y recibís reportes automáticos — todo desde un solo lugar, sin conocimientos técnicos.
                 </p>
                 <div className="flex flex-wrap gap-3 mb-10">
                   {['Integración real con ARCA/AFIP', 'Reportes automáticos semanales', 'Compartí facturas por WhatsApp'].map(t => (
@@ -63,19 +63,21 @@ export default function Facturacion() {
                     </div>
                   ))}
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                  <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 bg-white text-purple-900 font-bold px-8 py-4 rounded-full transition-colors text-sm hover:bg-purple-50 whitespace-nowrap">
+                    <i className="ri-play-circle-line text-lg"></i> Probá la demo gratis
+                  </a>
                   <a href={AUREA_URL} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm">
+                    className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm whitespace-nowrap">
                     Acceder a Aurea <i className="ri-external-link-line"></i>
                   </a>
                   <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm">
-                    <i className="ri-whatsapp-line text-green-400"></i> Consultar por WhatsApp
+                    className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm whitespace-nowrap">
+                    <i className="ri-whatsapp-line text-green-400"></i> WhatsApp
                   </a>
                 </div>
               </div>
-
-              {/* Dashboard mockup */}
               <div className="hidden lg:block">
                 <div className="bg-[#0D1117] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
                   <div className="flex items-center justify-between px-4 py-3 bg-[#0A0E14] border-b border-white/5">
@@ -84,16 +86,16 @@ export default function Facturacion() {
                         <span className="text-white font-black text-xs" style={{ fontFamily: 'serif' }}>A</span>
                       </div>
                       <span className="text-white text-xs font-semibold">Aurea</span>
-                      <span className="text-[#6B7280] text-xs">· Empresa Demo S.R.L.</span>
+                      <span className="text-[#6B7280] text-xs">· Panel general</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                      <span className="text-green-400 text-xs">En línea</span>
+                      <span className="text-green-400 text-xs">ARCA · Activo</span>
                     </div>
                   </div>
                   <div className="p-4 flex flex-col gap-3">
                     <div className="grid grid-cols-3 gap-2">
-                      {[{label:'Facturado',val:'$2.840.000',color:'#a855f7'},{label:'Comprobantes',val:'47',color:'#10B981'},{label:'Por cobrar',val:'$380.000',color:'#F59E0B'}].map((k,i)=>(
+                      {[{label:'Facturación del mes',val:'$448.524',color:'#a855f7'},{label:'Resultado estimado',val:'$416.384',color:'#10B981'},{label:'Saldo de caja',val:'$102.699',color:'#3B82F6'}].map((k,i)=>(
                         <div key={i} className="bg-[#111827] border border-white/5 rounded-xl p-3">
                           <p className="text-[#6B7280] text-xs mb-1">{k.label}</p>
                           <p className="font-bold text-sm" style={{color:k.color}}>{k.val}</p>
@@ -101,11 +103,11 @@ export default function Facturacion() {
                       ))}
                     </div>
                     <div className="bg-[#111827] border border-white/5 rounded-xl p-3">
-                      <p className="text-white text-xs font-semibold mb-2">Últimos comprobantes</p>
+                      <p className="text-white text-xs font-semibold mb-2">Comprobantes emitidos</p>
                       {[
-                        {tipo:'FC A',cliente:'Distribuidora Norte S.R.L.',monto:'$180.000'},
-                        {tipo:'FC B',cliente:'García, Martín',monto:'$45.000'},
-                        {tipo:'FC A',cliente:'Tech Solutions S.A.',monto:'$320.000'},
+                        {tipo:'FC A',cliente:'Distribuidora Norte S.A.',monto:'$222.606',ok:true},
+                        {tipo:'FC B',cliente:'Panadería Don José',monto:'$17.424',ok:true},
+                        {tipo:'TK',cliente:'Consumidor Final',monto:'$7.200',ok:false},
                       ].map((inv,i)=>(
                         <div key={i} className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
                           <div className="flex items-center gap-2">
@@ -114,15 +116,15 @@ export default function Facturacion() {
                           </div>
                           <div className="flex items-center gap-2">
                             <p className="text-white text-xs font-semibold">{inv.monto}</p>
-                            <span className="text-green-400 text-xs">CAE OK</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${inv.ok?'bg-green-500/10 text-green-400':'bg-white/5 text-[#6B7280]'}`}>{inv.ok?'Autorizado':'No fiscal'}</span>
                           </div>
                         </div>
                       ))}
                     </div>
                     <div className="flex gap-2">
                       <div className="flex-1 bg-[#111827] border border-white/5 rounded-xl p-3 text-center">
-                        <p className="text-[#6B7280] text-xs mb-1">Punto de venta</p>
-                        <p className="text-white text-sm font-bold">0001</p>
+                        <p className="text-[#6B7280] text-xs mb-1">Cobros pendientes</p>
+                        <p className="text-yellow-400 font-bold text-sm">$446.709</p>
                       </div>
                       <div className="flex-1 bg-purple-500/10 border border-purple-500/20 rounded-xl p-3 text-center">
                         <p className="text-purple-400 text-xs mb-1">Estado ARCA</p>
@@ -141,12 +143,8 @@ export default function Facturacion() {
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <p className="text-purple-400 text-xs font-semibold tracking-widest uppercase mb-3">Módulos</p>
-              <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                Todo lo que tu empresa necesita en un solo sistema.
-              </h2>
-              <p className="text-[#9CA3AF] text-base leading-relaxed">
-                Desde la facturación electrónica real hasta reportes automáticos semanales, sin necesidad de conocimientos técnicos.
-              </p>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">Todo lo que tu empresa necesita en un solo sistema.</h2>
+              <p className="text-[#9CA3AF] text-base leading-relaxed">Desde facturación electrónica real hasta reportes automáticos semanales, sin conocimientos técnicos.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {modulos.map((m) => (
@@ -169,12 +167,8 @@ export default function Facturacion() {
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <p className="text-purple-400 text-xs font-semibold tracking-widest uppercase mb-3">¿Cómo funciona?</p>
-              <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                Empezás a facturar en menos de un día.
-              </h2>
-              <p className="text-[#9CA3AF] text-base leading-relaxed">
-                No necesitás conocimientos técnicos. El proceso es simple y el equipo de Guevara Estudio te acompaña.
-              </p>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">Empezás a facturar en menos de un día.</h2>
+              <p className="text-[#9CA3AF] text-base leading-relaxed">No necesitás conocimientos técnicos. El proceso es simple y el equipo de Guevara Estudio te acompaña.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
               {pasos.map((p, i) => (
@@ -190,13 +184,11 @@ export default function Facturacion() {
                 </div>
               ))}
             </div>
-
-            {/* Trust badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { icon: 'ri-shield-check-line', title: 'Integración real con ARCA', desc: 'No simulada. Cada factura recibe su CAE oficial en segundos directamente de ARCA/AFIP.', color: '#10B981' },
-                { icon: 'ri-lock-line', title: 'Datos seguros', desc: 'Tu información y la de tus clientes está protegida. Nunca compartimos datos con terceros.', color: '#3B82F6' },
-                { icon: 'ri-customer-service-2-line', title: 'Soporte de tu contador', desc: 'Aurea es desarrollado por Guevara Estudio. Tenés soporte contable y técnico directo.', color: '#a855f7' },
+                { icon: 'ri-shield-check-line', title: 'Integración real con ARCA', desc: 'No simulada. Cada factura recibe su CAE oficial directamente de ARCA/AFIP.', color: '#10B981' },
+                { icon: 'ri-lock-line', title: 'Datos seguros', desc: 'Tu información y la de tus clientes está protegida. Nunca compartimos datos.', color: '#3B82F6' },
+                { icon: 'ri-customer-service-2-line', title: 'Soporte de tu contador', desc: 'Aurea es desarrollado por Guevara Estudio. Tenés soporte contable directo.', color: '#a855f7' },
               ].map((b) => (
                 <div key={b.title} className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-6 flex gap-4 items-start">
                   <span className="w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0" style={{ backgroundColor: `${b.color}15` }}>
@@ -220,14 +212,14 @@ export default function Facturacion() {
               <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-purple-500/5 pointer-events-none"></div>
               <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
                 <div className="text-center lg:text-left max-w-xl">
-                  <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                    ¿Listo para facturar de forma profesional?
-                  </h2>
-                  <p className="text-[#9CA3AF] text-base leading-relaxed">
-                    Creá tu cuenta gratis y empezá a emitir facturas reales ante ARCA en minutos. Si tenés dudas, escribinos por WhatsApp.
-                  </p>
+                  <h2 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">¿Listo para facturar de forma profesional?</h2>
+                  <p className="text-[#9CA3AF] text-base leading-relaxed">Probá la demo sin registrarte, o creá tu cuenta y empezá a emitir facturas reales ante ARCA en minutos.</p>
                 </div>
                 <div className="flex flex-col gap-4 w-full sm:w-auto flex-shrink-0">
+                  <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 bg-white text-purple-900 font-bold px-8 py-4 rounded-full transition-colors text-sm hover:bg-purple-50 whitespace-nowrap">
+                    <i className="ri-play-circle-line text-lg"></i> Probá la demo gratis
+                  </a>
                   <a href={AUREA_URL} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm whitespace-nowrap">
                     <i className="ri-external-link-line"></i> Acceder a Aurea
