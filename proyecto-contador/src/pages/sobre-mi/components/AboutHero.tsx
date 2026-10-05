@@ -5,7 +5,6 @@ const stats = [
   { value: '100%', label: 'Digital y remoto', icon: 'ri-global-line' },
 ];
 
-// Esta imagen es de static.readdy.ai (tu foto personal), no de la API de búsqueda
 const PHOTO_URL = 'https://static.readdy.ai/image/37bdca1177b18a6b22719b392b997c4d/7fc1121b7cf9a11d7dc6cd7e63b7750d.png';
 
 export default function AboutHero() {
@@ -26,12 +25,11 @@ export default function AboutHero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center pb-16">
           <div>
-            <p className="text-[#3B82F6] text-xs font-semibold tracking-widest uppercase mb-4">Sobre mí</p>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
               No soy solo un liquidador de impuestos.
             </h1>
             <p className="text-[#9CA3AF] text-lg leading-relaxed mb-4">
-              Soy <strong className="text-white">Yonathan Guevara</strong>,
+              Soy <strong className="text-white">Cr. Yonathan Guevara</strong>,
               Contador Público Matriculado. Trabajo con empresas, pymes y emprendedores
               en toda Argentina de forma completamente digital.
             </p>
