@@ -1,4 +1,4 @@
-import Navbar from '@/components/feature/Navbar';import Footer from '@/components/feature/Footer';const AUREA_URL = 'https://aurea.guevara-estudio.com.ar';const DEMO_URL = 'https://aurea.guevara-estudio.com.ar/demo';const WA_LINK = 'https://wa.me/5491150069106?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20el%20sistema%20Aurea.';const modulos = [  { icon: 'ri-file-list-3-line', title: 'Facturación electrónica real', desc: 'Emitís Facturas A, B y C directamente ante ARCA/AFIP con CAE en segundos. Sin intermediarios.' },  { icon: 'ri-share-line', title: 'Compartir comprobantes', desc: 'Un clic y la factura llega al cliente por WhatsApp o email, con link para ver, descargar e imprimir.' },  { icon: 'ri-mail-send-line', title: 'Resumen semanal automático', desc: 'Cada lunes recibís un resumen de ventas, gastos y cuentas por cobrar/pagar. Sin hacer nada.' },  { icon: 'ri-money-dollar-circle-line', title: 'Gastos y compras', desc: 'Registrá todos tus gastos para tener el cuadro de resultado real de tu negocio siempre actualizado.' },  { icon: 'ri-group-line', title: 'Clientes y cuentas corrientes', desc: 'Seguimiento de cada cliente, sus facturas y saldo pendiente. Sabés en todo momento quién te debe.' },  { icon: 'ri-settings-3-line', title: 'Multi-empresa y multi-punto de venta', desc: 'Varias empresas o puntos de venta desde una sola cuenta, cada uno con su logo y datos.' },];const pasos = [  { num: '01', title: 'Creás tu cuenta', desc: 'Registrate con tu email y datos de tu empresa. Menos de 5 minutos.' },  { num: '02', title: 'Configurás tu CUIT en ARCA', desc: 'Habilitás un Punto de Venta Web Services y delegás Facturación Electrónica. Te guiamos paso a paso.' },  { num: '03', title: 'Empezás a facturar', desc: 'Cargás la factura, la emitís y el CAE llega en segundos. Compartila por WhatsApp al instante.' },  { num: '04', title: 'Recibís reportes automáticos', desc: 'Todos los lunes te llega un resumen completo de tu semana sin hacer nada extra.' },];const Botones = () => (  <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">    <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"      className="px-8 py-4 bg-white text-[#0A0A0A] font-bold rounded-xl text-lg hover:bg-gray-100 transition-all shadow-lg">      Probá la demo gratis    </a>    <a href={AUREA_URL} target="_blank" rel="noopener noreferrer"      className="px-8 py-4 bg-[#a855f7] text-white font-bold rounded-xl text-lg hover:bg-[#9333ea] transition-all shadow-lg">      Acceder a Aurea    </a>    <a href={WA_LINK} target="_blank" rel="noopener noreferrer"      className="px-8 py-4 border-2 border-white/30 text-white font-bold rounded-xl text-lg hover:border-white/60 transition-all">      Consultar por WhatsAppimport Navbar from '@/components/feature/Navbar';
+import Navbar from '@/components/feature/Navbar';
 import Footer from '@/components/feature/Footer';
 
 const AUREA_URL = 'https://aurea.guevara-estudio.com.ar';
@@ -43,7 +43,6 @@ export default function Facturacion() {
     <div className="min-h-screen bg-[#0A0A0A] text-white">
       <Navbar />
 
-      {/* Hero */}
       <section className="pt-28 pb-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-[#a855f7]/10 border border-[#a855f7]/30 rounded-full px-5 py-2 mb-8">
@@ -54,7 +53,7 @@ export default function Facturacion() {
             <span className="text-[#a855f7]">sin complicaciones</span>
           </h1>
           <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Aurea es el sistema que desarrollamos para que nuestros clientes emitan facturas ante ARCA/AFIP, 
+            Aurea es el sistema que desarrollamos para que nuestros clientes emitan facturas ante ARCA/AFIP,
             compartan comprobantes y controlen su negocio — todo desde un solo lugar.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-10">
@@ -66,7 +65,6 @@ export default function Facturacion() {
         </div>
       </section>
 
-      {/* GIFs del sistema */}
       <section className="py-16 px-4 bg-[#111111]">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">El sistema en acción</h2>
@@ -74,7 +72,6 @@ export default function Facturacion() {
             Mirá cómo funciona Aurea en tiempo real, sin instalaciones ni configuraciones complejas.
           </p>
           <div className="space-y-12">
-            {/* GIF 1 */}
             <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
               <div className="bg-[#1a1a1a] px-4 py-3 flex items-center gap-2 border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
@@ -84,7 +81,6 @@ export default function Facturacion() {
               </div>
               <img src="/aurea-gif1-nueva-factura" alt="Crear una nueva factura en Aurea" className="w-full" />
             </div>
-            {/* GIF 2 */}
             <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
               <div className="bg-[#1a1a1a] px-4 py-3 flex items-center gap-2 border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
@@ -94,7 +90,6 @@ export default function Facturacion() {
               </div>
               <img src="/aurea-gif2-navegacion-sistema" alt="Navegación y módulos de Aurea" className="w-full" />
             </div>
-            {/* GIF 3 */}
             <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
               <div className="bg-[#1a1a1a] px-4 py-3 flex items-center gap-2 border-b border-white/10">
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
@@ -108,7 +103,6 @@ export default function Facturacion() {
         </div>
       </section>
 
-      {/* Módulos */}
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Todo lo que necesitás</h2>
@@ -129,7 +123,6 @@ export default function Facturacion() {
         </div>
       </section>
 
-      {/* Cómo funciona */}
       <section className="py-20 px-4 bg-[#111111]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Cómo empezar</h2>
@@ -162,7 +155,6 @@ export default function Facturacion() {
         </div>
       </section>
 
-      {/* CTA Final */}
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Querés empezar a usar Aurea?</h2>
@@ -176,4 +168,4 @@ export default function Facturacion() {
       <Footer />
     </div>
   );
-            }
+}
