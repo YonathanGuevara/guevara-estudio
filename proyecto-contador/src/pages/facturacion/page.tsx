@@ -3,7 +3,7 @@ import Footer from '@/components/feature/Footer';
 
 const AUREA_URL = 'https://aurea.guevara-estudio.com.ar';
 const DEMO_URL = 'https://aurea.guevara-estudio.com.ar/demo';
-const WA_LINK = 'https://wa.me/5492954321876?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20el%20sistema%20Aurea.';
+const WA_LINK = 'https://wa.me/5491150069106?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20el%20sistema%20Aurea.';
 
 const modulos = [
   { icon: 'ri-file-list-3-line', title: 'Facturación electrónica real', desc: 'Emitís Facturas A, B y C directamente ante ARCA/AFIP con CAE en segundos. Sin intermediarios.' },
