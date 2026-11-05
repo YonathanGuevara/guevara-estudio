@@ -190,3 +190,45 @@ export function calcularEstrategias(filas: FilaCuota[], cfg: Config): Estrategia
     armar('viejas', 'Las más viejas primero', vencidas, pagarEnOrden(viejas, cfg.presupuesto, cfg.parcial), cfg.presupuesto),
   ];
 }
+
+// ---- Detección automática de la tasa a partir de lo que informa el organismo ----
+
+export interface Deteccion {
+  modo: ModoInteres;
+  tasaDia: number; // fracción diaria, ej. 0.001 = 0,1% por día
+  n: number; // cuotas usadas
+  dispersion: number; // (máx - mín) / promedio entre cuotas; 0 = idéntica en todas
+  porCuota: { nombre: string; tasaDia: number }[];
+}
+
+export function detectarTasa(cuotas: Cuota[], hoy: string): Deteccion | null {
+  const filas = cuotas
+    .map((c) => ({ c, d: diasEntre(c.vto, hoy) }))
+    .filter((x) => x.d > 0 && x.c.capital > 0 && x.c.deudaOrg > x.c.capital * 1.000001);
+  if (filas.length === 0) return null;
+
+  const tasas = (modo: ModoInteres) =>
+    filas.map(({ c, d }) => {
+      const q = c.deudaOrg / c.capital;
+      return modo === 'simple' ? (q - 1) / d : Math.pow(q, 1 / d) - 1;
+    });
+  const resumen = (v: number[]) => {
+    const media = v.reduce((a, b) => a + b, 0) / v.length;
+    return { media, disp: media > 0 ? (Math.max(...v) - Math.min(...v)) / media : 0 };
+  };
+
+  const ts = tasas('simple');
+  const tk = tasas('compuesto');
+  const rs = resumen(ts);
+  const rk = resumen(tk);
+  const compuesto = filas.length >= 2 && rk.disp + 1e-9 < rs.disp;
+  const elegido = compuesto ? tk : ts;
+  const r = compuesto ? rk : rs;
+  return {
+    modo: compuesto ? 'compuesto' : 'simple',
+    tasaDia: r.media,
+    n: filas.length,
+    dispersion: r.disp,
+    porCuota: filas.map((x, i) => ({ nombre: x.c.nombre, tasaDia: elegido[i] })),
+  };
+}
