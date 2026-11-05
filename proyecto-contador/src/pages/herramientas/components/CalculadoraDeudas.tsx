@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import {
   calcularEstrategias,
   calcularFilas,
+  detectarTasa,
   isoMasDias,
   type Config,
   type Cuota,
@@ -16,6 +17,9 @@ const COLOR = '#F59E0B';
 
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR');
 const fmtFecha = (iso: string) => (iso ? iso.split('-').reverse().join('/') : '');
+
+const fmtPct = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 4 });
+const mensual = (r: number, modo: ModoInteres) => (modo === 'simple' ? r * 30 : Math.pow(1 + r, 30) - 1);
 
 function hoyISO(): string {
   const d = new Date();
@@ -38,7 +42,8 @@ function ejemplo(hoy: string): Cuota[] {
     nombre,
     capital,
     vto: isoMasDias(hoy, -mora),
-    deudaOrg: 0,
+    // En el ejemplo, la deuda "que informa el organismo" sale de un 0,1% diario simple.
+    deudaOrg: mora > 0 ? Math.round(capital * (1 + 0.001 * mora) * 100) / 100 : 0,
   }));
 }
 
@@ -56,6 +61,7 @@ export default function CalculadoraDeudas() {
   const [hoy, setHoy] = useState(hoyISO);
   const [cuotas, setCuotas] = useState<Cuota[]>(() => ejemplo(hoyISO()));
   const [esEjemplo, setEsEjemplo] = useState(true);
+  const [tasaModo, setTasaModo] = useState<'auto' | 'manual'>('auto');
   const [tasa, setTasa] = useState(0.1);
   const [unidad, setUnidad] = useState<UnidadTasa>('dia');
   const [modo, setModo] = useState<ModoInteres>('simple');
@@ -64,11 +70,17 @@ export default function CalculadoraDeudas() {
   const [nombre, setNombre] = useState('');
   const nextId = useRef(100);
 
-  const cfg: Config = { tasa, unidad, modo, hoy, presupuesto, parcial };
+  const det = useMemo(() => detectarTasa(cuotas, hoy), [cuotas, hoy]);
+  const usaDet = tasaModo === 'auto' && det !== null;
+  const efTasa = usaDet ? det.tasaDia * 100 : tasa;
+  const efUnidad: UnidadTasa = usaDet ? 'dia' : unidad;
+  const efModo: ModoInteres = usaDet ? det.modo : modo;
+
+  const cfg: Config = { tasa: efTasa, unidad: efUnidad, modo: efModo, hoy, presupuesto, parcial };
 
   const filas = useMemo(
-    () => calcularFilas(cuotas, { tasa, unidad, modo, hoy, presupuesto, parcial }),
-    [cuotas, tasa, unidad, modo, hoy, presupuesto, parcial],
+    () => calcularFilas(cuotas, { tasa: efTasa, unidad: efUnidad, modo: efModo, hoy, presupuesto, parcial }),
+    [cuotas, efTasa, efUnidad, efModo, hoy, presupuesto, parcial],
   );
   const vencidas = filas.filter((f) => f.vencida && f.costo > 0);
   const totalDeuda = vencidas.reduce((a, f) => a + f.costo, 0);
@@ -108,6 +120,15 @@ export default function CalculadoraDeudas() {
     setTasa(0.1);
     setUnidad('dia');
     setModo('simple');
+    setTasaModo('auto');
+  };
+  const pasarAManual = () => {
+    if (det) {
+      setTasa(Number((det.tasaDia * 100).toPrecision(4)));
+      setUnidad('dia');
+      setModo(det.modo);
+    }
+    setTasaModo('manual');
   };
 
   // ---- Lectura de resultados ----
@@ -122,7 +143,7 @@ export default function CalculadoraDeudas() {
   if (estrategias.length && nuevas && viejas && mejor) {
     if (casiIgual) {
       lectura =
-        modo === 'compuesto'
+        efModo === 'compuesto'
           ? 'Con interés sobre interés, cada peso de deuda genera lo mismo sin importar de qué cuota sea, así que el orden casi no cambia los intereses. Con empate en intereses, suele convenir empezar por las más viejas, que son las que primero pueden llegar a juicio.'
           : 'Con estos datos el orden casi no cambia el interés que frenás. Desempatan otros factores: el riesgo de juicio en las cuotas más viejas y las reglas de imputación del organismo.';
     } else if (nuevas.evitado30 > viejas.evitado30) {
@@ -190,7 +211,7 @@ export default function CalculadoraDeudas() {
                 <input id={`v-${c.id}`} type="date" value={c.vto} onChange={(e) => editar(c.id, 'vto', e.target.value)} className={inputCls} />
               </div>
               <div>
-                <label htmlFor={`d-${c.id}`} className={labelCls}>Deuda hoy ($, opcional)</label>
+                <label htmlFor={`d-${c.id}`} className={labelCls}>Deuda hoy según el organismo ($)</label>
                 <input id={`d-${c.id}`} type="number" min="0" step="any" inputMode="decimal" value={c.deudaOrg || ''} onChange={(e) => editar(c.id, 'deudaOrg', parseFloat(e.target.value) || 0)} placeholder="Calcular" className={inputCls} />
               </div>
               <button
@@ -214,7 +235,7 @@ export default function CalculadoraDeudas() {
           {cuotas.length >= MAX_CUOTAS ? `Máximo ${MAX_CUOTAS} cuotas` : '+ Agregar cuota'}
         </button>
         <p className="text-[#6B7280] text-[11px] leading-relaxed mt-3">
-          Si cargás “Deuda hoy”, la herramienta usa ese importe (el que te muestra el organismo) como lo que cuesta cancelar la cuota. Si lo dejás vacío, lo calcula con la tasa de abajo.
+          Tip: cargá “Deuda hoy” (con intereses, como te la muestra el organismo) en 2 o 3 cuotas vencidas y la herramienta descubre sola la tasa de interés. En las cuotas donde lo dejes vacío, la calcula con esa tasa.
         </p>
       </div>
 
@@ -231,25 +252,72 @@ export default function CalculadoraDeudas() {
             <label htmlFor="deu-hoy" className={labelCls}>Fecha de pago</label>
             <input id="deu-hoy" type="date" value={hoy} onChange={(e) => setHoy(e.target.value || hoyISO())} className={inputCls} />
           </div>
-          <div>
-            <label htmlFor="deu-tasa" className={labelCls}>Tasa de interés por mora (%)</label>
-            <div className="flex gap-2">
-              <input id="deu-tasa" type="number" min="0" step="any" inputMode="decimal" value={tasa || ''} onChange={(e) => setTasa(parseFloat(e.target.value) || 0)} placeholder="0,1" className={inputCls} />
-              <div className="flex gap-1.5 flex-shrink-0">
-                <button onClick={() => setUnidad('dia')} className={pill(unidad === 'dia')}>por día</button>
-                <button onClick={() => setUnidad('mes')} className={pill(unidad === 'mes')}>por mes</button>
+        </div>
+
+        <div className="mb-4">
+          <span className={labelCls}>Tasa de interés por mora</span>
+          <div className="flex gap-2 flex-wrap mb-3">
+            <button onClick={() => setTasaModo('auto')} className={pill(tasaModo === 'auto')}>Detectarla de mis cuotas (recomendado)</button>
+            <button onClick={pasarAManual} className={pill(tasaModo === 'manual')}>Ya la sé</button>
+          </div>
+
+          {tasaModo === 'auto' && (
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4">
+              {!det && (
+                <p className="text-[#F59E0B] text-xs leading-relaxed">
+                  Todavía no puedo detectarla: cargá en “Deuda hoy según el organismo” lo que te figura (con intereses) en 2 o 3 cuotas vencidas, y usá como fecha de pago el día en que el organismo calculó esos importes. Mientras tanto estoy usando {String(tasa).replace('.', ',')}% {unidad === 'dia' ? 'por día' : 'por mes'}; si la sabés, tocá “Ya la sé”.
+                </p>
+              )}
+              {det && (
+                <div>
+                  <p className="text-white text-sm font-semibold mb-1">
+                    Tasa detectada: {fmtPct(det.tasaDia * 100)}% por día
+                    <span className="text-[#9CA3AF] font-normal"> · {fmtPct(mensual(det.tasaDia, det.modo) * 100)}% por mes aprox. · {det.modo === 'simple' ? 'interés simple' : 'interés sobre interés'}</span>
+                  </p>
+                  <p className={'text-xs leading-relaxed mb-3 ' + (det.n === 1 ? 'text-[#F59E0B]' : det.dispersion <= 0.03 ? 'text-green-400' : det.dispersion <= 0.15 ? 'text-[#F59E0B]' : 'text-red-400')}>
+                    {det.n === 1
+                      ? 'Salió de una sola cuota, así que no puedo comprobar que sea un patrón. Cargá 2 o 3 cuotas para estar seguros.'
+                      : det.dispersion <= 0.03
+                        ? `Coincide en las ${det.n} cuotas que cargaste: el patrón es consistente.`
+                        : det.dispersion <= 0.15
+                          ? 'Es parecida en todas las cuotas pero no exacta: puede que la tasa haya cambiado con el tiempo. Tomá el número como aproximado.'
+                          : 'Las cuotas no siguen una tasa constante (puede haber recargos fijos o cambios de tasa). Revisá los importes cargados o usá “Ya la sé”.'}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {det.porCuota.map((x, i) => (
+                      <span key={i} className="text-[11px] text-[#D1D5DB] bg-white/5 border border-white/10 rounded-lg px-2 py-1">
+                        {x.nombre || 'Cuota'}: {fmtPct(x.tasaDia * 100)}%/día
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {tasaModo === 'manual' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="deu-tasa" className={labelCls}>Tasa (%)</label>
+                <div className="flex gap-2">
+                  <input id="deu-tasa" type="number" min="0" step="any" inputMode="decimal" value={tasa || ''} onChange={(e) => setTasa(parseFloat(e.target.value) || 0)} placeholder="0,1" className={inputCls} />
+                  <div className="flex gap-1.5 flex-shrink-0">
+                    <button onClick={() => setUnidad('dia')} className={pill(unidad === 'dia')}>por día</button>
+                    <button onClick={() => setUnidad('mes')} className={pill(unidad === 'mes')}>por mes</button>
+                  </div>
+                </div>
+                <p className="text-[#6B7280] text-[11px] mt-1">Figura en la boleta o en la web del organismo. Ej.: 0,1% por día.</p>
+              </div>
+              <div>
+                <span className={labelCls}>¿Cómo se calcula el interés?</span>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => setModo('simple')} className={pill(modo === 'simple')}>Simple (sobre la cuota original)</button>
+                  <button onClick={() => setModo('compuesto')} className={pill(modo === 'compuesto')}>Interés sobre interés</button>
+                </div>
+                <p className="text-[#6B7280] text-[11px] mt-1">En la duda, dejá “Simple”: es lo más común en impuestos.</p>
               </div>
             </div>
-            <p className="text-[#6B7280] text-[11px] mt-1">Figura en la boleta o en la web del organismo. Ej.: 0,1% por día.</p>
-          </div>
-          <div>
-            <span className={labelCls}>¿Cómo se calcula el interés?</span>
-            <div className="flex gap-2 flex-wrap">
-              <button onClick={() => setModo('simple')} className={pill(modo === 'simple')}>Simple (sobre la cuota original)</button>
-              <button onClick={() => setModo('compuesto')} className={pill(modo === 'compuesto')}>Interés sobre interés</button>
-            </div>
-            <p className="text-[#6B7280] text-[11px] mt-1">En la duda, dejá “Simple”: es lo más común en impuestos.</p>
-          </div>
+          )}
         </div>
 
         <label className="flex items-start gap-2 text-[#9CA3AF] text-xs cursor-pointer">
