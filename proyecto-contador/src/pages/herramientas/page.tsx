@@ -2,6 +2,7 @@ import Navbar from '@/components/feature/Navbar';
 import Footer from '@/components/feature/Footer';
 import CalculadoraRentabilidad from './components/CalculadoraRentabilidad';
 import CalculadoraPrecios from './components/CalculadoraPrecios';
+import CalculadoraDeudas from './components/CalculadoraDeudas';
 import { useState } from 'react';
 
 const herramientas = [
@@ -18,6 +19,13 @@ const herramientas = [
     title: 'Calculadora de precios',
     desc: 'Determiná el precio ideal para tu producto o servicio según costos, competencia o valor percibido.',
     color: '#10B981',
+  },
+  {
+    id: 'deudas',
+    icon: 'ri-scales-3-line',
+    title: 'Calculadora de deudas',
+    desc: 'Si no llegás a pagar todo, descubrí qué cuotas conviene cancelar primero para frenar más intereses.',
+    color: '#F59E0B',
   },
 ];
 
@@ -45,7 +53,7 @@ export default function Herramientas() {
 
           {/* Cards selector */}
           {!activa && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
               {herramientas.map((h) => (
                 <button
                   key={h.id}
@@ -87,6 +95,7 @@ export default function Herramientas() {
 
               {activa === 'rentabilidad' && <CalculadoraRentabilidad />}
               {activa === 'precios' && <CalculadoraPrecios />}
+              {activa === 'deudas' && <CalculadoraDeudas />}
             </div>
           )}
 
