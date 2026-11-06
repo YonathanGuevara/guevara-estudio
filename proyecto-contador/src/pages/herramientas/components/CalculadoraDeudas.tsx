@@ -13,7 +13,6 @@ import {
 
 const WA_NUMBER = '5491150069106';
 const MAX_CUOTAS = 20;
-const COLOR = '#F59E0B';
 
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR');
 const fmtFecha = (iso: string) => (iso ? iso.split('-').reverse().join('/') : '');
@@ -131,31 +130,94 @@ export default function CalculadoraDeudas() {
     setTasaModo('manual');
   };
 
-  // ---- Lectura de resultados ----
+  // ---- Recomendación ----
   const maxEvitado = estrategias.length ? Math.max(...estrategias.map((e) => e.evitado30)) : 0;
   const minEvitado = estrategias.length ? Math.min(...estrategias.map((e) => e.evitado30)) : 0;
   const casiIgual = estrategias.length > 0 && maxEvitado - minEvitado <= maxEvitado * 0.02;
   const nuevas = estrategias.find((e) => e.id === 'nuevas');
   const viejas = estrategias.find((e) => e.id === 'viejas');
   const mejor = estrategias.find((e) => e.id === 'mejor');
+  // Si da casi lo mismo, se recomienda empezar por las más viejas (son las primeras en llegar a juicio).
+  const recomendada: Estrategia | undefined = casiIgual ? viejas : mejor;
 
-  let lectura = '';
-  if (estrategias.length && nuevas && viejas && mejor) {
+  const nombresPago = (e: Estrategia) =>
+    e.pagos
+      .slice()
+      .sort(
+        (x, y) =>
+          Number(x.fraccion < 0.9999) - Number(y.fraccion < 0.9999) || (x.fila.cuota.vto < y.fila.cuota.vto ? -1 : x.fila.cuota.vto > y.fila.cuota.vto ? 1 : 0),
+      )
+      .map((p) => (p.fila.cuota.nombre || 'Cuota') + (p.fraccion < 0.9999 ? ` (una parte: ${Math.round(p.fraccion * 100)}%)` : ''));
+  const unir = (xs: string[]) => (xs.length <= 1 ? xs.join('') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1]);
+
+  const razones: string[] = [];
+  if (recomendada && recomendada.pagos.length > 0 && viejas && nuevas) {
     if (casiIgual) {
-      lectura =
-        efModo === 'compuesto'
-          ? 'Con interés sobre interés, cada peso de deuda genera lo mismo sin importar de qué cuota sea, así que el orden casi no cambia los intereses. Con empate en intereses, suele convenir empezar por las más viejas, que son las que primero pueden llegar a juicio.'
-          : 'Con estos datos el orden casi no cambia el interés que frenás. Desempatan otros factores: el riesgo de juicio en las cuotas más viejas y las reglas de imputación del organismo.';
-    } else if (nuevas.evitado30 > viejas.evitado30) {
-      lectura = `Pagar primero las cuotas más nuevas frena unos ${fmt(
-        nuevas.evitado30 - viejas.evitado30,
-      )} más de interés por mes que pagar primero las más viejas. El interés que ya se acumuló en las viejas no sigue creciendo, y las nuevas, con el mismo monto de impuesto, generan interés nuevo todos los días.`;
+      razones.push(
+        `Con tus datos, el orden casi no cambia cuánto interés frenás: la diferencia es de menos de ${fmt(Math.max(maxEvitado - minEvitado, 1))} por mes.`,
+      );
+      razones.push('Cuando da parecido, conviene empezar por las más viejas: son las primeras que pueden pasar a apremio o juicio, con costas y honorarios.');
+      if (efModo === 'compuesto') {
+        razones.push('Con interés sobre interés, cada peso que adeudás genera lo mismo sin importar de qué cuota sea.');
+      }
     } else {
-      lectura = `Pagar primero las cuotas más viejas frena unos ${fmt(
-        viejas.evitado30 - nuevas.evitado30,
-      )} más de interés por mes que pagar primero las más nuevas.`;
+      razones.push(`Son las cuotas que más interés frenan con el dinero que tenés: ${fmt(recomendada.evitado30)} menos de intereses por mes.`);
+      const dif = recomendada.evitado30 - viejas.evitado30;
+      if (recomendada.id !== 'viejas' && dif >= 1) {
+        razones.push(`Si empezaras por las más viejas frenarías ${fmt(viejas.evitado30)} por mes: ${fmt(dif)} menos.`);
+      }
+      razones.push(
+        efModo === 'simple' && recomendada.id !== 'viejas'
+          ? 'Las cuotas viejas ya acumularon mucho interés, pero ese interés no sigue creciendo solo: lo que suma cada día es un porcentaje del importe original. Como las más nuevas arrastran menos intereses acumulados, cada peso que pagás en ellas frena más interés diario.'
+          : 'Es la combinación que mejor aprovecha tu dinero: con lo mismo que pagás, frena más interés.',
+      );
     }
   }
+  const restantes = recomendada
+    ? vencidas.filter((f) => !recomendada.pagos.some((p) => p.fila === f && p.fraccion >= 0.9999)).length
+    : 0;
+
+  const detalleTabla = (
+    <div>
+            <p className="text-white text-xs font-semibold uppercase tracking-widest mb-1">Detalle por cuota</p>
+            <p className="text-[#6B7280] text-xs mb-4">Ordenadas de mayor a menor interés frenado por cada $1.000 que pagás.</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs min-w-[560px]">
+                <thead>
+                  <tr className="text-left text-[#6B7280]">
+                    <th className="font-medium pb-2 pr-3">Cuota</th>
+                    <th className="font-medium pb-2 pr-3">Vence</th>
+                    <th className="font-medium pb-2 pr-3 text-right">Días de mora</th>
+                    <th className="font-medium pb-2 pr-3 text-right">Deuda hoy</th>
+                    <th className="font-medium pb-2 pr-3 text-right">Interés por día</th>
+                    <th className="font-medium pb-2 text-right">Frenás por mes c/ $1.000</th>
+                  </tr>
+                </thead>
+                <tbody className="text-[#D1D5DB]">
+                  {filas
+                    .slice()
+                    .sort((a, b) => Number(b.vencida) - Number(a.vencida) || b.eficiencia - a.eficiencia)
+                    .map((f) => (
+                      <tr key={f.cuota.id} className="border-t border-white/5">
+                        <td className="py-2 pr-3 text-white">{f.cuota.nombre || 'Cuota'}</td>
+                        <td className="py-2 pr-3 tabular-nums">{fmtFecha(f.cuota.vto) || '—'}</td>
+                        {f.vencida ? (
+                          <>
+                            <td className="py-2 pr-3 text-right tabular-nums">{f.dias}</td>
+                            <td className="py-2 pr-3 text-right tabular-nums">{fmt(f.costo)}</td>
+                            <td className="py-2 pr-3 text-right tabular-nums">{fmt(f.porDia)}</td>
+                            <td className="py-2 text-right tabular-nums text-green-400 font-medium">{fmt(f.eficiencia * 1000)}</td>
+                          </>
+                        ) : (
+                          <td colSpan={4} className="py-2 text-right text-[#6B7280]">No vencida: todavía no genera interés</td>
+                        )}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+    </div>
+  );
 
   const waTexto = `Hola!${nombre.trim() ? ' Soy ' + nombre.trim() + '.' : ''} Usé la calculadora de deudas de tu web. Tengo ${
     vencidas.length
@@ -349,13 +411,60 @@ export default function CalculadoraDeudas() {
           </div>
         )}
 
-        {estrategias.length > 0 && (
+        {estrategias.length > 0 && recomendada && (
           <div>
-            <p className="text-white text-xs font-semibold uppercase tracking-widest mb-1">3 · Comparación de estrategias</p>
+            <p className="text-white text-xs font-semibold uppercase tracking-widest mb-1">3 · Qué te conviene pagar</p>
             <p className="text-[#6B7280] text-xs mb-4">
               Deuda vencida total: {fmt(totalDeuda)} · Pagando {fmt(presupuesto)} el {fmtFecha(hoy)}
             </p>
 
+            {recomendada.pagos.length === 0 ? (
+              <div className="bg-[#111827] border border-[#F59E0B]/30 rounded-2xl p-6 sm:p-8 mb-4">
+                <p className="text-[#F59E0B] text-xs font-semibold uppercase tracking-widest mb-2">Con ese monto no alcanza</p>
+                <p className="text-white text-xl font-bold leading-snug mb-2">
+                  No llegás a cancelar ninguna cuota completa: la más chica cuesta {fmt(Math.min(...vencidas.map((f) => f.costo)))}.
+                </p>
+                <p className="text-[#9CA3AF] text-sm leading-relaxed">
+                  Si el organismo acepta pagos parciales, tildá esa opción arriba y te digo cómo repartir el dinero. Si no, juntá ese monto y pagá primero la cuota más conveniente.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-green-500/10 to-[#111827] border border-green-500/30 rounded-2xl p-6 sm:p-8 mb-4">
+                <p className="text-green-400 text-xs font-semibold uppercase tracking-widest mb-2">Pagá primero</p>
+                <p className="text-white text-3xl sm:text-4xl font-extrabold leading-tight mb-2">{unir(nombresPago(recomendada))}</p>
+                <p className="text-[#9CA3AF] text-sm mb-6">
+                  Son {fmt(recomendada.usado)} de los {fmt(presupuesto)} que podés pagar.
+                </p>
+
+                <p className="text-white text-sm font-semibold mb-3">¿Por qué?</p>
+                <ul className="space-y-3 mb-6">
+                  {razones.map((r, i) => (
+                    <li key={i} className="flex gap-3 text-[#D1D5DB] text-sm leading-relaxed">
+                      <i className="ri-checkbox-circle-fill text-green-400 mt-0.5 flex-shrink-0"></i>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="border-t border-white/10 pt-4 text-[#9CA3AF] text-xs leading-relaxed space-y-1.5">
+                  {recomendada.sobrante >= 1 && (
+                    <p>
+                      Te sobran {fmt(recomendada.sobrante)}: no alcanzan para otra cuota completa. Si el organismo acepta pagos parciales, tildá esa opción arriba y te digo cómo usarlos.
+                    </p>
+                  )}
+                  <p>
+                    Después de pagar, te quedan {restantes} cuota{restantes === 1 ? '' : 's'} vencida{restantes === 1 ? '' : 's'} por {fmt(recomendada.deudaRestante)}, que seguirán sumando unos {fmt(recomendada.queda30)} de interés por mes.
+                  </p>
+                  <p>Antes de pagar, leé los puntos a tener en cuenta más abajo.</p>
+                </div>
+              </div>
+            )}
+
+            <details className="bg-[#111827] border border-white/5 rounded-2xl mb-4">
+              <summary className="cursor-pointer text-[#9CA3AF] hover:text-white text-sm px-6 py-4">
+                Ver cómo se comparó con otras formas de pagar y el detalle por cuota
+              </summary>
+              <div className="px-6 pb-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
               {estrategias.map((e) => {
                 const destacado = !casiIgual && e.evitado30 >= maxEvitado - 0.005;
@@ -407,59 +516,17 @@ export default function CalculadoraDeudas() {
               })}
             </div>
 
-            {lectura && (
-              <div className="bg-[#0F172A] border border-[#F59E0B]/20 rounded-2xl p-5 mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <i className="ri-lightbulb-line" style={{ color: COLOR }}></i>
-                  <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: COLOR }}>Qué dice la comparación</p>
-                </div>
-                <p className="text-[#9CA3AF] text-sm leading-relaxed">{lectura}</p>
+                {detalleTabla}
               </div>
-            )}
+            </details>
           </div>
         )}
 
-        {/* Ranking */}
-        {filas.length > 0 && vencidas.length > 0 && (
-          <div className="bg-[#111827] border border-white/5 rounded-2xl p-6 mb-4">
-            <p className="text-white text-xs font-semibold uppercase tracking-widest mb-1">Detalle por cuota</p>
-            <p className="text-[#6B7280] text-xs mb-4">Ordenadas de mayor a menor interés frenado por cada $1.000 que pagás.</p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs min-w-[560px]">
-                <thead>
-                  <tr className="text-left text-[#6B7280]">
-                    <th className="font-medium pb-2 pr-3">Cuota</th>
-                    <th className="font-medium pb-2 pr-3">Vence</th>
-                    <th className="font-medium pb-2 pr-3 text-right">Días de mora</th>
-                    <th className="font-medium pb-2 pr-3 text-right">Deuda hoy</th>
-                    <th className="font-medium pb-2 pr-3 text-right">Interés por día</th>
-                    <th className="font-medium pb-2 text-right">Frenás por mes c/ $1.000</th>
-                  </tr>
-                </thead>
-                <tbody className="text-[#D1D5DB]">
-                  {filas
-                    .slice()
-                    .sort((a, b) => Number(b.vencida) - Number(a.vencida) || b.eficiencia - a.eficiencia)
-                    .map((f) => (
-                      <tr key={f.cuota.id} className="border-t border-white/5">
-                        <td className="py-2 pr-3 text-white">{f.cuota.nombre || 'Cuota'}</td>
-                        <td className="py-2 pr-3 tabular-nums">{fmtFecha(f.cuota.vto) || '—'}</td>
-                        {f.vencida ? (
-                          <>
-                            <td className="py-2 pr-3 text-right tabular-nums">{f.dias}</td>
-                            <td className="py-2 pr-3 text-right tabular-nums">{fmt(f.costo)}</td>
-                            <td className="py-2 pr-3 text-right tabular-nums">{fmt(f.porDia)}</td>
-                            <td className="py-2 text-right tabular-nums text-green-400 font-medium">{fmt(f.eficiencia * 1000)}</td>
-                          </>
-                        ) : (
-                          <td colSpan={4} className="py-2 text-right text-[#6B7280]">No vencida: todavía no genera interés</td>
-                        )}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {alcanzaTodo && filas.length > 0 && (
+          <details className="bg-[#111827] border border-white/5 rounded-2xl mb-4">
+            <summary className="cursor-pointer text-[#9CA3AF] hover:text-white text-sm px-6 py-4">Ver el detalle por cuota</summary>
+            <div className="px-6 pb-6">{detalleTabla}</div>
+          </details>
         )}
       </div>
 
