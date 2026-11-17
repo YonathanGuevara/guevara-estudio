@@ -29,7 +29,7 @@ export default function AboutHero() {
               No soy solo un liquidador de impuestos.
             </h1>
             <p className="text-[#9CA3AF] text-lg leading-relaxed mb-4">
-              Soy <strong className="text-white">Cr. Yonathan Guevara</strong>,
+              Soy <strong className="text-white">Yonathan Guevara</strong>,
               Contador Público Matriculado. Trabajo con empresas, pymes y emprendedores
               en toda Argentina de forma completamente digital.
             </p>
@@ -38,6 +38,9 @@ export default function AboutHero() {
               negocio, entiendo tus números y te ayudo a tomar{' '}
               <strong className="text-white">decisiones basadas en datos reales</strong>,
               no en intuiciones.
+            </p>
+            <p className="text-lg text-gray-300 leading-relaxed mt-4">
+              Agendemos una reunión y hablamos, es sin costo.
             </p>
           </div>
 
