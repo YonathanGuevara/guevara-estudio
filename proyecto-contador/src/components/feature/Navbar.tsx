@@ -10,7 +10,6 @@ const navLinks = [
   { label: 'Sist. de Facturación', path: '/facturacion' },
   { label: 'Herramientas', path: '/herramientas' },
   { label: 'Contacto', path: '/contacto' },
-  { label: 'Vendedores', path: '/vendedores' },
 ];
 
 export default function Navbar() {
@@ -48,6 +47,9 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+        <a href="/vendedores" className="text-sm font-medium transition-colors whitespace-nowrap cursor-pointer text-[#9CA3AF] hover:text-white">
+          Vendedores
+        </a>
           {/* Link externo a AUREA — no modifica el menú interno */}
           <a href={AUREA_URL} target="_blank" rel="noopener noreferrer"
             className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors whitespace-nowrap cursor-pointer">
@@ -73,9 +75,12 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <Link key={link.path} to={link.path}
               className={`text-base font-medium cursor-pointer ${location.pathname === link.path ? 'text-white' : 'text-[#9CA3AF]'}`}>
-              {link.label}
+              {link.label}h
             </Link>
           ))}
+        <a href="/vendedores" className="text-base font-medium cursor-pointer text-[#9CA3AF]">
+          Vendedores
+        </a>
           <a href={AUREA_URL} target="_blank" rel="noopener noreferrer"
             className="text-base font-medium text-purple-400 cursor-pointer">
             AUREA ↗
