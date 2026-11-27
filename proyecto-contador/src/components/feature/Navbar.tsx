@@ -10,6 +10,7 @@ const navLinks = [
   { label: 'Sist. de Facturación', path: '/facturacion' },
   { label: 'Herramientas', path: '/herramientas' },
   { label: 'Contacto', path: '/contacto' },
+  { label: 'Vendedores', path: '/vendedores' },
 ];
 
 export default function Navbar() {
