@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contador para vendedores online | Cr. Yonathan Guevara</title>
+<meta property="og:title" content="Cr. Yonathan Guevara · Contador para vendedores online">
+<meta property="og:description" content="Impuestos, facturación y ganancia real para vendedores de Mercado Libre, Tiendanube e Instagram. 100% online, todo el país.">
+<meta property="og:url" content="https://guevara-estudio.com.ar/vendedores">
+
+<meta name="description" content="Cr. Yonathan Guevara, contador público. Impuestos, facturación y ganancia real para vendedores de Mercado Libre, Tiendanube e Instagram. 100% online, todo el país.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* layout: una sola columna que cuenta una historia (problema, calculadora, quién soy, precios, preguntas, formulario); la "liquidación" de una venta es el elemento propio del rubro */
+:root{
+  --bg:#0a1020; --band:#0e1629; --surface:#131d33; --surface-2:#1a2640; --line:#25324f;
+  --ink:#eef2fa; --dim:#9aa6bf; --accent:#3b82f6; --accent-ink:#ffffff; --accent-soft:#16264a;
+  --money:#34d399; --cut:#f59e7b; --todo:#facc15;
+  --display:'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --body:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+a{color:inherit}
+.in{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:64px}
+section.band{background:var(--band)}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,6.2vw,58px);line-height:1.02;font-weight:800}
+h2{font-size:clamp(26px,4vw,38px);line-height:1.1;font-weight:800}
+h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.lead{color:var(--dim);font-size:18px;max-width:60ch}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.head{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;max-width:720px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:14px 20px;font:600 16px var(--body);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.ghost{border-color:var(--line);color:var(--ink);background:transparent}
+.btn.ghost:hover{border-color:var(--accent)}
+.btn.wa{background:#25d366;color:#05210f}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.todo{display:inline;background:rgba(250,204,21,.12);color:var(--todo);border:1px dashed var(--todo);border-radius:6px;padding:1px 6px;font-size:.92em;white-space:normal}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(10,16,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.top .in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{display:flex;flex-direction:column;line-height:1.15;text-decoration:none}
+.brand b{font-family:var(--display);font-size:16px}
+.brand span{font-size:12px;color:var(--dim)}
+.top .btn{padding:9px 14px;font-size:14px}
+
+/* hero */
+.hero{padding-block:48px 56px}
+.hero .in{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;align-items:center}
+@media (max-width:820px){.hero .in{grid-template-columns:minmax(0,1fr)}}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:14px;color:var(--dim)}
+.facts span{display:inline-flex;align-items:center;gap:7px}
+.facts i{width:7px;height:7px;border-radius:50%;background:var(--money);display:inline-block}
+.portrait{position:relative;max-width:360px;justify-self:center;width:100%}
+.portrait img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:18px;border:1px solid var(--line);background:var(--surface)}
+.ticket{position:absolute;left:-18px;right:24px;bottom:22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,0,0,.45);font-size:13px}
+@media (max-width:820px){.portrait{max-width:300px}.ticket{left:-8px;right:12px}}
+.ticket .r{display:flex;justify-content:space-between;gap:10px}
+.ticket .r span:first-child{color:var(--dim)}
+.ticket .tot{border-top:1px dashed var(--line);margin-top:6px;padding-top:6px;font-weight:600}
+.ticket .tot span:last-child{color:var(--money)}
+
+/* liquidación */
+.liq-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.liq-wrap{grid-template-columns:minmax(0,1fr)}}
+.receipt{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+.receipt .t{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.l{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.l span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.l.cut span:last-child{color:var(--cut)}
+.l.total{border-bottom:0;padding-top:10px;font-weight:600;font-size:17px}
+.l.total span:last-child{color:var(--money)}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:14px;background:var(--surface-2)}
+.bar div{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12.5px;color:var(--dim)}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);margin-right:6px;vertical-align:0}
+.points{display:flex;flex-direction:column;gap:16px}
+.points div{display:flex;flex-direction:column;gap:4px}
+.points b{font-family:var(--display);font-size:17px}
+.points p{color:var(--dim)}
+
+/* calculadora */
+.calc{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:24px;align-items:start}
+@media (max-width:820px){.calc{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f.full{grid-column:1/-1}
+label{font-size:13.5px;color:var(--dim);font-weight:500}
+input,select,textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font:500 16px var(--body);padding:11px 12px}
+input[type=number]{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chans{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.chan{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font:500 14.5px var(--body);cursor:pointer}
+.chan[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
+.chan .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600}
+.chan .v.neg{color:var(--cut)}
+.chan .mini{grid-column:1/-1;height:5px;border-radius:3px;background:var(--bg);overflow:hidden}
+.chan .mini i{display:block;height:100%;background:var(--money)}
+.note{font-size:13px;color:var(--dim);margin-top:12px}
+.warn{font-size:13px;color:var(--dim);margin-top:12px;border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:10px 12px}
+.warn b{color:var(--ink)}
+
+/* pasos */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;counter-reset:s}
+@media (max-width:820px){.steps{grid-template-columns:minmax(0,1fr)}}
+.step{border-top:2px solid var(--accent);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.step::before{counter-increment:s;content:"Paso " counter(s);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.step p{color:var(--dim)}
+
+/* quién soy */
+.about{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:640px){.about{grid-template-columns:minmax(0,1fr)}}
+.about img{width:100%;max-width:200px;aspect-ratio:1;object-fit:cover;object-position:top;border-radius:14px;border:1px solid var(--line)}
+.about .txt{display:flex;flex-direction:column;gap:14px;max-width:64ch}
+.about .txt p{color:var(--dim)}
+.verify{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+@media (max-width:640px){.verify{grid-template-columns:minmax(0,1fr)}}
+.verify div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.verify small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+
+/* testimonios */
+.quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:820px){.quotes{grid-template-columns:minmax(0,1fr)}}
+.quote{border:1px dashed var(--todo);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;color:var(--dim);font-size:15px}
+.quote b{color:var(--todo);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+
+.cmp{max-width:760px}
+.cmp-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.cmp-row span:not(:first-child){font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.cmp-row span:last-child{color:var(--money)}
+.cmp-h{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.cmp-h span:last-child{color:var(--dim)}
+/* precios */
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+@media (max-width:720px){.plans{grid-template-columns:minmax(0,1fr)}}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.plan.pro{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.plan .tag{align-self:flex-start;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px}
+.price{font-family:var(--display);font-size:38px;font-weight:800;letter-spacing:-.02em}
+.price small{font-family:var(--body);font-size:15px;font-weight:500;color:var(--dim);letter-spacing:0}
+.plan ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.plan li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;font-size:15px}
+.plan li::before{content:"✓";color:var(--money);font-weight:700}
+.plan .btn{margin-top:auto}
+.group-label{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:28px 0 12px}
+.head + .group-label{margin-top:0}
+.plan.wide{gap:14px}
+.plan.wide ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 20px}
+@media (max-width:720px){.plan.wide ul{grid-template-columns:minmax(0,1fr)}}
+.plan.wide .btn{align-self:flex-start;margin-top:0}
+.wide-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 20px}
+.alta{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;align-items:center}
+.alta b{font-family:var(--mono)}
+
+/* faq */
+.faq{display:flex;flex-direction:column;border-top:1px solid var(--line);max-width:800px}
+details{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{color:var(--dim);padding-bottom:16px;max-width:66ch}
+
+/* formulario */
+.contact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:32px;align-items:start}
+@media (max-width:820px){.contact{grid-template-columns:minmax(0,1fr)}}
+.contact .info{display:flex;flex-direction:column;gap:14px}
+.contact .info p{color:var(--dim)}
+.contact .row{display:flex;flex-direction:column;gap:2px}
+.contact .row small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+form .btn{width:100%;margin-top:6px}
+.preview{font-size:13px;color:var(--dim);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;white-space:pre-wrap;margin-top:12px}
+
+footer{border-top:1px solid var(--line);padding-block:32px 40px;font-size:14px;color:var(--dim)}
+footer .in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 32px}
+footer .col{display:flex;flex-direction:column;gap:4px}
+footer b{color:var(--ink)}
+</style>
+
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <a class="brand" href="/"><b>Cr. Yonathan Guevara</b><span>Contador Público · vendedores online</span></a>
+    <a class="btn wa" id="wa-top" href="https://wa.me/5491150069106?text=GANANCIA" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="in">
+      <div class="stack">
+        <div class="eyebrow">Para quienes venden en Mercado Libre, Tiendanube o Instagram</div>
+        <h1>Vendés todos los días. ¿Sabés cuánto te queda?</h1>
+        <p class="lead">Soy Yonathan Guevara, contador público. Me ocupo de tus impuestos y tu facturación ante ARCA, seas monotributista o responsable inscripto, y te ayudo a entender cuánto ganás de verdad en cada venta.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#calculadora">Estimá tu ganancia</a>
+          <a class="btn ghost" href="#precios">Ver precios</a>
+        </div>
+        <div class="facts">
+          <span><i></i>Matrícula T° XXI F° XX, C.P.C.E.L.P.</span>
+          <span><i></i>100% online, todo el país</span>
+          <span><i></i>Precios publicados, sin sorpresas</span>
+        </div>
+      </div>
+      <div class="portrait">
+        <img src="data:image/webp;base64,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" alt="Yonathan Guevara, contador público" width="300" height="450">
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="problema">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Lo que no se ve en la app</div>
+        <h2>De una remera de $20.000, ¿cuánto es tuyo?</h2>
+        <p class="lead">Vender en Mercado Libre puede ser un gran negocio. Lo importante es saber cuánto deja cada venta, porque los descuentos aparecen de a poco y en distintos lugares.</p>
+      </div>
+      <div class="liq-wrap">
+        <div class="receipt">
+          <div class="t">Liquidación de una venta · Mercado Libre, sin cuotas</div>
+          <div class="l"><span>Precio que paga tu cliente</span><span>$20.000</span></div>
+          <div class="l cut"><span>Cargo por vender (15,5%)</span><span>− $3.100</span></div>
+          <div class="l cut"><span>Costo por unidad de ML</span><span>− $2.760</span></div>
+          <div class="l cut"><span>Retención de Ingresos Brutos (1%)</span><span>− $200</span></div>
+          <div class="l cut"><span>Costo de la remera</span><span>− $9.000</span></div>
+          <div class="l cut"><span>Embalaje</span><span>− $600</span></div>
+          <div class="l total"><span>Te queda por venta</span><span>$4.340</span></div>
+          <div class="bar" role="img" aria-label="De $20.000: 48% producto y embalaje, 29% Mercado Libre, 1% retenciones, 22% ganancia">
+            <div style="width:48%;background:var(--dim)"></div>
+            <div style="width:29.3%;background:var(--cut)"></div>
+            <div style="width:1%;background:#ef4444"></div>
+            <div style="width:21.7%;background:var(--money)"></div>
+          </div>
+          <div class="legend">
+            <span style="--c:var(--dim)">Producto y embalaje 48%</span>
+            <span style="--c:var(--cut)">Mercado Libre 29%</span>
+            <span style="--c:#ef4444">Retención 1%</span>
+            <span style="--c:var(--money)">Tu ganancia 22%</span>
+          </div>
+        </div>
+        <div class="points">
+          <div><b>Un margen chico con volumen también es negocio.</b><p>Con 40 remeras por mes te quedan unos $173.600 antes de tus impuestos fijos. Con 1.000 por mes es otra historia. Lo que importa es conocer el número.</p></div>
+          <div><b>Cada canal tiene su número.</b><p>La misma remera en Tiendanube con Pago Nube deja $9.355 por venta, pero Mercado Libre te trae más ventas. Sabiendo las dos cosas, decidís vos.</p></div>
+          <div><b>No prometo magia: te ayudo a entender tus números.</b><p>Todos los meses, con tus ventas reales, tus comisiones y tus retenciones, para que decidas precios, volumen y canales con información.</p></div>
+        </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calculadora">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Probalo con tu producto</div>
+        <h2>Estimá cuánto te queda por venta</h2>
+        <p class="lead">Poné el precio y lo que te cuesta, y mirá una estimación para cada canal. Es una aproximación: el número exacto te lo calculo yo con tus datos.</p>
+      </div>
+      <div class="calc">
+        <div class="panel">
+          <div class="fields">
+            <div class="f full"><label for="c-precio">Precio de venta ($) <span style="opacity:.7">· ejemplo: un buzo</span></label><input id="c-precio" type="number" inputmode="numeric" min="0" step="100" value="28000"></div>
+            <div class="f"><label for="c-costo">Lo que te cuesta el producto ($)</label><input id="c-costo" type="number" inputmode="numeric" min="0" step="100" value="13000"></div>
+            <div class="f"><label for="c-emb">Embalaje ($)</label><input id="c-emb" type="number" inputmode="numeric" min="0" step="50" value="600"></div>
+            <div class="f full"><label for="c-env">Envío que pagás vos ($)</label><input id="c-env" type="number" inputmode="numeric" min="0" step="100" value="0"></div>
+          </div>
+          <div class="chans" id="chans" role="group" aria-label="Canal de venta"></div>
+        </div>
+        <div class="receipt" aria-live="polite">
+          <div class="t" id="r-title">Liquidación</div>
+          <div id="r-lines"></div>
+          <p class="note" id="r-note"></p>
+          <p class="warn"><b>Es una estimación, no un número exacto.</b> Usa valores promedio a noviembre de 2026: cargo de ML 15,5% (cambia según categoría), retención de Ingresos Brutos 1% (cambia según provincia), Pago Nube plan Esencial a 14 días y Mercado Pago a 18 días, con IVA sobre las comisiones. No incluye abonos ni impuestos mensuales.</p>
+          <a class="btn wa" id="calc-wa" href="https://wa.me/5491150069106" target="_blank" rel="noopener" style="margin-top:14px;width:100%">Te lo calculo exacto por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="como">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Cómo trabajamos</div>
+        <h2>Empezar lleva una charla de 15 minutos</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><h3>Me escribís por WhatsApp</h3><p>Me contás dónde vendés y cómo estás con tus impuestos. En 15 minutos te digo qué necesitás y cuánto cuesta. Sin cargo.</p></div>
+        <div class="step"><h3>Me ocupo de ARCA</h3><p>Te inscribo en los impuestos que te correspondan o tomo tu situación como está: monotributo o responsable inscripto, Ingresos Brutos, deudas y vencimientos. Vos no te preocupás por ARCA.</p></div>
+        <div class="step"><h3>Facturás y ves tu ganancia</h3><p>Facturás desde AUREA, mi sistema, y cada mes sabés cuánto vendiste, cuánto te descontaron y cuánto ganaste.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quien">
+    <div class="in about">
+      <img src="data:image/webp;base64,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" alt="" width="200" height="200">
+      <div class="txt">
+        <div class="eyebrow">Quién está del otro lado</div>
+        <h2>Una persona con nombre, matrícula y WhatsApp</h2>
+        <p>Soy Yonathan Guevara, contador público. Trabajo de forma 100% online con emprendedores y empresas de todo el país: inscripción en impuestos, obligaciones fiscales, contabilidad y facturación. Me especialicé en quienes venden por internet porque es donde más cuesta ver el número real: comisiones, cuotas, envíos y retenciones que se descuentan por distintos lados.</p>
+        <p>Vas a hablar siempre conmigo, no con un call center. Lo que acordamos queda por escrito y los precios están publicados más abajo.</p>
+        <div class="verify">
+          <div><small>Matrícula</small><span>T° XXI · F° XX</span></div>
+          <div><small>Consejo profesional</small><span>C.P.C.E.L.P.</span></div>
+          <div><small>CUIT</small><span class="mono">20-38551551-1</span></div>
+          <div><small>Redes</small><span><a href="https://www.instagram.com/guevara.estudio.contable/" target="_blank" rel="noopener">Instagram @guevara.estudio.contable</a><br><a href="https://www.facebook.com/profile.php?id=100086221640462" target="_blank" rel="noopener">Facebook Guevara - Estudio Contable</a></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="ejemplo">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Ejemplo de lo que miramos juntos</div>
+        <h2>Mismo producto, mismo precio, otra ganancia</h2>
+        <p class="lead">Así se ve el primer análisis que hago con cada vendedor. Este es un ejemplo con precios de referencia, no un cliente real: en la consulta lo hacemos con tus productos.</p>
+      </div>
+      <div class="receipt cmp">
+        <div class="t">Te queda por venta, sin cuotas</div>
+        <div class="cmp-row cmp-h"><span>Producto</span><span>Mercado Libre</span><span>Tiendanube</span></div>
+        <div class="cmp-row"><span>Labial a $9.000</span><span>$2.305</span><span>$4.730</span></div>
+        <div class="cmp-row"><span>Mochila a $32.000</span><span>$7.860</span><span>$14.829</span></div>
+        <div class="cmp-row"><span>Auriculares a $45.000</span><span>$7.275</span><span>$17.850</span></div>
+        <p class="note">Con esta información decidís qué producto vender en cada canal, a qué precio y si vale la pena ofrecer cuotas. Ejemplo con cargo de ML 15,5%, costo de la mochila $15.500 con embalaje, envío de los auriculares a cargo del vendedor en ML ($5.500), Pago Nube plan Esencial a 14 días y retención de Ingresos Brutos del 1%.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="precios">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Precios</div>
+        <h2>Lo que cuesta, publicado</h2>
+        <p class="lead">Si estás dando tus primeros pasos con los impuestos, hay dos servicios con precio fijo. Si ya sos responsable inscripto o tenés una empresa, armamos una propuesta según tu volumen.</p>
+      </div>
+      <div class="group-label">Para quienes están empezando</div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Servicio al día</h3>
+          <div class="price">$50.000 <small>por mes</small></div>
+          <ul>
+            <li>Inscripción y altas en los impuestos que te correspondan</li>
+            <li>Gestión de tu monotributo y recategorizaciones</li>
+            <li>Regularización de deuda en ARCA</li>
+            <li>Declaraciones juradas e Ingresos Brutos</li>
+            <li>Facturación con AUREA</li>
+            <li>Consultas por WhatsApp</li>
+          </ul>
+          <a class="btn ghost" href="#contacto" data-plan="Servicio al día">Quiero este servicio</a>
+        </div>
+        <div class="plan pro">
+          <span class="tag">Pensado para vendedores online</span>
+          <h3>Servicio Pro</h3>
+          <div class="price">$80.000 <small>por mes</small></div>
+          <ul>
+            <li>Todo lo del Servicio al día</li>
+            <li>Tablero de ganancia real en AUREA, producto por producto</li>
+            <li>Informe semanal de ventas y gastos</li>
+            <li>Reunión mensual para revisar costos y precios</li>
+          </ul>
+          <a class="btn primary" href="#contacto" data-plan="Servicio Pro">Quiero este servicio</a>
+        </div>
+      </div>
+      <div class="alta"><span>Inscripción o alta como cliente, una sola vez</span><b>$50.000</b></div>
+      <div class="group-label">Para responsables inscriptos y empresas</div>
+      <div class="plan wide">
+        <div class="wide-head">
+          <h3>Servicio Empresas</h3>
+          <div class="price"><small>desde</small> $250.000 <small>por mes</small></div>
+        </div>
+        <ul>
+          <li>Declaraciones juradas de IVA</li>
+          <li>Ingresos Brutos y Convenio Multilateral</li>
+          <li>Ganancias y obligaciones anuales</li>
+          <li>Facturación y tablero de ganancia real en AUREA</li>
+        </ul>
+        <p class="note" style="margin-top:0">El precio final depende de tu volumen de operaciones y de en cuántas provincias vendés. Te paso la propuesta por escrito antes de empezar.</p>
+        <a class="btn ghost" href="#contacto" data-plan="Servicio Empresas">Pedir propuesta</a>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="band" id="contacto">
+    <div class="in contact">
+      <div class="info">
+        <div class="eyebrow">Primer paso</div>
+        <h2>Contame tu caso y te respondo por WhatsApp</h2>
+        <p>Completá esto y se abre WhatsApp con tu mensaje listo. La primera charla es sin cargo y sin compromiso.</p>
+        <div class="row"><small>WhatsApp</small><span class="mono">+54 9 11 5006-9106</span></div>
+        <div class="row"><small>Horario</small><span>Lunes a viernes, de 7 a 15 h</span></div>
+        <div class="row"><small>Email</small><span>ygasistenciacontable@gmail.com</span></div>
+      </div>
+      <form class="panel" id="form" novalidate>
+        <div class="fields">
+          <div class="f full"><label for="q-nombre">Tu nombre</label><input id="q-nombre" autocomplete="given-name" placeholder="Ej. Martina"></div>
+          <div class="f full"><label for="q-donde">¿Dónde vendés?</label>
+            <select id="q-donde"><option>Mercado Libre</option><option>Tiendanube u otra tienda propia</option><option>Instagram o WhatsApp</option><option>En varios lados</option><option>Todavía no vendo</option></select></div>
+          <div class="f full"><label for="q-sit">¿Cómo estás hoy?</label>
+            <select id="q-sit"><option>No estoy inscripto</option><option>Soy monotributista y quiero ordenarme</option><option>Soy responsable inscripto o tengo una empresa</option><option>Tengo deuda o problemas con ARCA</option><option>Ya tengo contador y quiero cambiar</option></select></div>
+          <div class="f full"><label for="q-plan">Plan que te interesa</label>
+            <select id="q-plan"><option>Todavía no sé</option><option>Servicio al día</option><option>Servicio Pro</option><option>Servicio Empresas</option></select></div>
+        </div>
+        <a class="btn wa" id="wa-send" href="https://wa.me/5491150069106" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        <div class="preview" id="wa-preview" aria-label="Mensaje que se va a enviar"></div>
+      </form>
+    </div>
+  </section>
+  <section id="preguntas">
+    <div class="in">
+      <div class="head">
+        <div class="eyebrow">Preguntas frecuentes</div>
+        <h2>Lo que me preguntan antes de empezar</h2>
+      </div>
+      <div class="faq">
+        <details><summary>¿Cómo sé que esto es serio si es todo online?</summary><p>Podés verificar mi matrícula en el consejo profesional con los datos de arriba. Antes de pagar nada hablamos por WhatsApp o videollamada, y lo que acordamos te lo paso por escrito.</p></details>
+        <details><summary>Tengo deuda con ARCA o me dieron de baja. ¿Me podés ayudar?</summary><p>Sí. Es de lo más común. Revisamos cuánto debés, si conviene un plan de pagos y cómo volver a estar al día. En la primera charla te digo qué hay que hacer.</p></details>
+        <details><summary>Ya tengo contador. ¿Me puedo cambiar?</summary><p>Sí, en cualquier momento del año. Me encargo del traspaso para que no se pase ningún vencimiento.</p></details>
+        <details><summary>¿Trabajás solo con monotributistas?</summary><p>No. Trabajo también con responsables inscriptos y empresas: IVA, Ganancias, Ingresos Brutos, Convenio Multilateral y contabilidad. Para ellos hay un servicio aparte, con propuesta a medida. Si tu negocio crece, seguimos juntos.</p></details>
+        <details><summary>¿Qué pasa si me paso de la categoría del monotributo?</summary><p>Controlo lo que facturás mes a mes y te aviso antes de llegar al tope, para recategorizarte a tiempo o planificar el paso a responsable inscripto si hace falta.</p></details>
+        <details><summary>Vendo en varias provincias. ¿Sirve igual?</summary><p>Sí. Trabajo con vendedores de todo el país y reviso también Ingresos Brutos y las retenciones de tu provincia, que son parte de lo que te descuentan en cada venta.</p></details>
+        <details><summary>¿AUREA tiene un costo aparte?</summary><p>No. Está incluido en los dos servicios. En el plan Pro se suma el tablero de ganancia real con tus productos.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="in">
+    <div class="col"><b>Cr. Yonathan Guevara</b><span>Contador Público · T° XXI F° XX C.P.C.E.L.P.</span><span>CUIT 20-38551551-1</span></div>
+    <div class="col"><span>Atención 100% online en todo el país</span><span>Lunes a viernes, de 7 a 15 h</span><span class="mono">+54 9 11 5006-9106</span></div>
+    <div class="col"><span>guevara-estudio.com.ar</span><span>ygasistenciacontable@gmail.com</span></div>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => (n < 0 ? "− $" : "$") + Math.round(Math.abs(n)).toLocaleString("es-AR");
+const RET = 1; // % retención IIBB de referencia
+const mlFijo = p => p < 15000 ? 1410 : p < 24000 ? 2760 : p < 33000 ? 3360 : 0;
+const CH = [
+  {id:"ml", name:"Mercado Libre, sin cuotas", com:15.5, iva:false, fijo:true,
+   note:"El costo por unidad de ML se cobra en productos de menos de $33.000. En productos baratos es lo que más pesa."},
+  {id:"ml3", name:"Mercado Libre, 3 cuotas sin interés", com:15.5+8.5, iva:false, fijo:true,
+   note:"Ofrecer 3 cuotas al mismo precio en ML suma 8,5% al cargo por vender."},
+  {id:"tn", name:"Tiendanube con Pago Nube", com:3.49, iva:true,
+   note:"Comisión de Pago Nube del plan Esencial cobrando a 14 días, más IVA. El abono mensual de Tiendanube va aparte."},
+  {id:"mp", name:"Instagram, link de Mercado Pago", com:3.39, iva:true,
+   note:"Comisión de Mercado Pago cobrando a 18 días, más IVA."},
+  {id:"tr", name:"Instagram, transferencia", com:0, iva:false,
+   note:"Sin comisión. Igual te pueden retener Ingresos Brutos en el banco o la billetera, y la venta se factura igual."},
+];
+let sel = "ml";
+function calc(c){
+  const P = +$("c-precio").value || 0, cost = +$("c-costo").value || 0, emb = +$("c-emb").value || 0, env = +$("c-env").value || 0;
+  const com = P * c.com / 100, iva = c.iva ? com * 0.21 : 0, fijo = c.fijo ? mlFijo(P) : 0, ret = P * RET / 100;
+  return {P, cost, emb, env, com, iva, fijo, ret, net: P - com - iva - fijo - ret - cost - emb - env};
+}
+function render(){
+  const rs = CH.map(c => ({c, r: calc(c)}));
+  const max = Math.max(...rs.map(x => Math.abs(x.r.net)), 1);
+  $("chans").innerHTML = rs.map(({c, r}) => `<button type="button" class="chan" data-id="${c.id}" aria-pressed="${c.id===sel}">
+      <span>${c.name}</span><span class="v ${r.net<0?'neg':''}">≈ ${fmt(r.net)}</span>
+      <span class="mini"><i style="width:${Math.max(r.net,0)/max*100}%"></i></span></button>`).join("");
+  const {c, r} = rs.find(x => x.c.id === sel);
+  const L = (t, v) => v ? `<div class="l cut"><span>${t}</span><span>− ${fmt(v)}</span></div>` : "";
+  $("r-title").textContent = "Estimación · " + c.name;
+  const pctNet = r.P ? Math.round(r.net / r.P * 1000) / 10 : 0;
+  $("r-lines").innerHTML = `<div class="l"><span>Precio que paga tu cliente</span><span>${fmt(r.P)}</span></div>
+    ${L(c.id==="tn"||c.id==="mp" ? `Comisión (${c.com.toLocaleString("es-AR")}%)` : `Cargo por vender (${c.com.toLocaleString("es-AR")}%)`, r.com)}
+    ${L("IVA sobre la comisión", r.iva)}
+    ${L("Costo por unidad de ML", r.fijo)}
+    ${L("Retención de Ingresos Brutos (1%)", r.ret)}
+    ${L("Costo del producto", r.cost)}
+    ${L("Embalaje", r.emb)}
+    ${L("Envío a tu cargo", r.env)}
+    <div class="l total"><span>Te quedaría, aproximadamente</span><span style="${r.net<0?'color:var(--cut)':''}">≈ ${fmt(r.net)}</span></div>`;
+  $("calc-wa").href = "https://wa.me/5491150069106?text=" + encodeURIComponent(`GANANCIA\nHola Yonathan, quiero saber cuánto me queda exacto.\nVendo a ${fmt(r.P)} en ${c.name}.\nMe cuesta ${fmt(r.cost + r.emb)} con embalaje.`);
+  $("r-note").textContent = `Te quedaría cerca del ${pctNet.toLocaleString("es-AR")}% de lo que cobrás. ${c.note}`;
+}
+$("chans").addEventListener("click", e => { const b = e.target.closest(".chan"); if (b){ sel = b.dataset.id; render(); } });
+["c-precio","c-costo","c-emb","c-env"].forEach(id => $(id).addEventListener("input", render));
+render();
+
+function waText(){
+  const n = $("q-nombre").value.trim();
+  return `GANANCIA\nHola Yonathan${n ? ", soy " + n : ""}.\nVendo en: ${$("q-donde").value}.\nHoy: ${$("q-sit").value}.\nPlan: ${$("q-plan").value}.`;
+}
+function updWa(){
+  const t = waText();
+  $("wa-send").href = "https://wa.me/5491150069106?text=" + encodeURIComponent(t);
+  $("wa-preview").textContent = t;
+}
+["q-nombre","q-donde","q-sit","q-plan"].forEach(id => $(id).addEventListener("input", updWa));
+document.querySelectorAll("[data-plan]").forEach(a => a.addEventListener("click", () => { $("q-plan").value = a.dataset.plan; updWa(); }));
+$("form").addEventListener("submit", e => e.preventDefault());
+updWa();
+</script>
+
+</body>
+</html>
